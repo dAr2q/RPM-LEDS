@@ -1,0 +1,131 @@
+//File: RPM-LEDS.ino
+//Based on example from f1_24_udp simpleserialprint and drslight
+
+#include "WiFi.h" // ESP32 WiFi include
+#include <WiFiUdp.h>
+#include <F1_24_UDP.h>
+#include <FastLED.h>
+#define NUM_LEDS 16
+#define BRIGHTNESS 20
+#define DATA_PIN 4
+CRGB leds[NUM_LEDS];
+
+const char *SSID = "WIFI-Name";
+const char *Password = "12345678";
+
+void startWiFi();
+
+//The IP address that this ESP32 has requested to be assigned to.
+IPAddress ip();
+
+F1_24_Parser* parser;
+
+void setup()
+{
+  Serial.begin(115200);
+  Serial.println("Starting RPM LEDS v0.4");
+  parser = new F1_24_Parser();  
+  FastLED.addLeds<WS2812, DATA_PIN, GRB>(leds, NUM_LEDS);
+  FastLED.setBrightness(BRIGHTNESS);
+  FastLED.clear();
+  FastLED.show();
+  delay(250);
+  leds[0] = CRGB::Green;
+  leds[1] = CRGB::Green;
+  leds[2] = CRGB::Green;
+  leds[3] = CRGB::Green;
+  leds[4] = CRGB::Green;
+  FastLED.show();
+  delay(250);
+  leds[15] = CRGB::Cyan;
+  FastLED.show();
+  startWiFi();
+  leds[5] = CRGB::Red;
+  leds[6] = CRGB::Red;
+  leds[7] = CRGB::Red;
+  leds[8] = CRGB::Red;
+  leds[9] = CRGB::Red;
+  FastLED.show();
+  delay(250);
+  parser->begin();
+  leds[10] = CRGB::Purple;
+  leds[11] = CRGB::Purple;
+  leds[12] = CRGB::Purple;
+  leds[13] = CRGB::Purple;
+  leds[14] = CRGB::Purple;
+  FastLED.show();
+  delay(250);
+  FastLED.clear();
+  FastLED.show();
+  delay(250);
+}
+
+void loop()
+{
+  parser->read();
+  unsigned int playerCar = parser->packetCarTelemetryData()->m_playerCarIndex(); //Get the index of the players car in the array.
+  //Setup DRS Light
+  FastLED.clear();
+  uint8_t drslight = parser->packetCarStatusData()->m_carStatusData(playerCar).m_drsAllowed; //DRS allowed
+  drs(drslight);
+  uint16_t revs = parser->packetCarTelemetryData()->m_carTelemetryData(playerCar).m_engineRPM; //Revlights
+  revLight(revs);
+  Serial.println(revs);
+}
+
+void drs(int drslight) {
+  if (drslight) {
+    leds[15] = CRGB::Purple;
+    FastLED.show();
+  }  else  {
+    leds[15] = CRGB::Black;
+    FastLED.show();
+  }
+}
+
+void revLight(int revs) {
+  int ledCount = map(revs, 9900, 12000, 0, 15); // Adjust max RPM
+  for (int i = 0; i < 5; i++) {
+    leds[i] = (i < ledCount) ? CRGB::Green : CRGB::Black;
+  }
+  FastLED.show();
+  for (int i = 5; i < 10; i++) {
+    leds[i] = (i < ledCount) ? CRGB::Red : CRGB::Black;
+  }
+  FastLED.show();
+  for (int i = 10;  i < 15; i++) {
+    leds[i] = (i < ledCount) ? CRGB::Purple : CRGB::Black;
+  }
+  FastLED.show();
+}
+
+void startWiFi()
+{
+  WiFi.persistent(false);
+  WiFi.mode(WIFI_OFF);
+  WiFi.mode(WIFI_STA);
+  WiFi.disconnect();
+  delay(100);  
+  WiFi.begin(SSID, Password);
+  Serial.print("Attempting to connect to ");
+  Serial.println(SSID);
+
+  uint8_t i = 0;
+  while (WiFi.status() != WL_CONNECTED)
+  {
+    Serial.print('.');
+    delay(250);
+
+    if ((++i % 16) == 0)
+    {
+      Serial.println(F(" still trying to connect"));
+      ESP.restart();
+    }
+  }
+
+  Serial.print(F("Connection Successful | IP Address: "));
+  leds[15] = CRGB::Green;
+  FastLED.show();
+  delay(250);
+  Serial.println(WiFi.localIP());
+}
