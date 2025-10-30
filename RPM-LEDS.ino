@@ -1,9 +1,10 @@
 //File: RPM-LEDS.ino
 //Based on example from f1_24_udp simpleserialprint and drslight
 
-#include "WiFi.h" // ESP32 WiFi include
+#include <WiFi.h> // ESP32 WiFi include
+//#include <ESP8266WiFi.h> // ESP8266 WiFi include
 #include <WiFiUdp.h>
-#include <F1_24_UDP.h>
+#include <src/F1_24_UDP.h>
 #include <FastLED.h>
 #define NUM_LEDS 16
 #define BRIGHTNESS 20
