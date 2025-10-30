@@ -9,8 +9,8 @@ Uses FastLED from [FastLED](https://github.com/FastLED/FastLED)
 - Currently works on ESP32-WROOM and ESP32-C3 Super Mini (could work on ESP8266 but dont have any to test)
 
 # ToDo
-- Mini Webserver for entering SSID and Password
-- Before connecting to WiFi create AP to enter Webserver
+
+- Before connecting to WiFi (if NVS is empty) create AP to enter Webserver
 - if EN Button pressed for 5 seconds reset and erase Wifi Settings and set AP
 
 # Bugs

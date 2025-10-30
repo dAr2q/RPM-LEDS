@@ -17,7 +17,7 @@ F1_24_Parser* parser;
 void setup()
 {
   Serial.begin(115200);
-  Serial.println("Starting RPM LEDS v0.5");
+  Serial.println("Starting RPM LEDS v0.7");
   parser = new F1_24_Parser();  
   FastLED.addLeds<WS2812, DATA_PIN, GRB>(leds, NUM_LEDS);
   FastLED.setBrightness(BRIGHTNESS);
@@ -31,12 +31,11 @@ void setup()
   leds[4] = CRGB::Green;
   FastLED.show();
   delay(250);  
-  leds[15] = CRGB::Cyan;
-  FastLED.show();
    if (wifi_set_main())
     {
         Serial.println("Connect WIFI SUCCESS");
-        leds[15] = CRGB::Green;
+        leds[15] = CRGB::Cyan;
+        FastLED.show();
         leds[5] = CRGB::Red;
   leds[6] = CRGB::Red;
   leds[7] = CRGB::Red;
@@ -63,10 +62,9 @@ void setup()
         FastLED.show();
         leds[15] = CRGB::Red;
         FastLED.show();
-        delay(250);
-        while(1) {
-          //stop everything
-        }
+        Serial.println("Restarting ESP in 5 seconds");
+        delay(5000);
+        ESP.restart();
     }
 }
 
