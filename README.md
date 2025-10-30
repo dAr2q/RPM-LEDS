@@ -11,7 +11,7 @@ Uses FastLED from [FastLED](https://github.com/FastLED/FastLED)
 # ToDo
 - Mini Webserver for entering SSID and Password
 - Before connecting to WiFi create AP to enter Webserver
-- if EN Button pressed erase Wifi Settings and open AP
+- if EN Button pressed for 5 seconds reset and erase Wifi Settings and set AP
 
 # Bugs
 
