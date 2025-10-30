@@ -264,7 +264,7 @@ int wifi_config_server()
                     client.println();
 
                     client.print("<h1>RPM-Display</h1><br><h2>ESP32 WIFI CONFIG</h2><br>");
-                    client.print("<form action=\"/set_over\">SSID:<br><input type=\"text\" name=\"ssid\"><br>PASSWORD:<br><input type=\"text\" name=\"password\"><br><br>");
+                    client.print("<form action=\"/set_over\">SSID:<br><input type=\"text\" name=\"ssid\"><br>PASSWORD:<br><input type=\"password\" name=\"password\"><br><br>");
                     client.print("<input type=\"submit\" value=\"Set\"></form>");
                     // The HTTP response ends with another blank line:
                     client.println();

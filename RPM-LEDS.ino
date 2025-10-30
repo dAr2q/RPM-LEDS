@@ -12,7 +12,6 @@
 #define DATA_PIN 4
 CRGB leds[NUM_LEDS];
 
-
 F1_24_Parser* parser;
 
 void setup()
@@ -32,11 +31,12 @@ void setup()
   leds[4] = CRGB::Green;
   FastLED.show();
   delay(250);  
+  leds[15] = CRGB::Cyan;
   FastLED.show();
    if (wifi_set_main())
     {
         Serial.println("Connect WIFI SUCCESS");
-        leds[15] = CRGB::Cyan;
+        leds[15] = CRGB::Green;
         leds[5] = CRGB::Red;
   leds[6] = CRGB::Red;
   leds[7] = CRGB::Red;
@@ -64,6 +64,9 @@ void setup()
         leds[15] = CRGB::Red;
         FastLED.show();
         delay(250);
+        while(1) {
+          //stop everything
+        }
     }
 }
 
