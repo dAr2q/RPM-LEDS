@@ -6,13 +6,12 @@
 #include <WiFiUdp.h>
 #include <src/F1_24_UDP.h>
 #include <FastLED.h>
+int led = 8;
 #define NUM_LEDS 16
 #define BRIGHTNESS 20
 #define DATA_PIN 4
 CRGB leds[NUM_LEDS];
 
-const char *SSID = "WIFI-Name";
-const char *Password = "12345678";
 
 void startWiFi();
 
@@ -23,8 +22,9 @@ F1_24_Parser* parser;
 
 void setup()
 {
+  pinMode(led, OUTPUT);
   Serial.begin(115200);
-  Serial.println("Starting RPM LEDS v0.4");
+  Serial.println("Starting RPM LEDS v0.5");
   parser = new F1_24_Parser();  
   FastLED.addLeds<WS2812, DATA_PIN, GRB>(leds, NUM_LEDS);
   FastLED.setBrightness(BRIGHTNESS);
@@ -71,7 +71,7 @@ void loop()
   drs(drslight);
   uint16_t revs = parser->packetCarTelemetryData()->m_carTelemetryData(playerCar).m_engineRPM; //Revlights
   revLight(revs);
-  Serial.println(revs);
+  //Serial.println(revs); //disable for now
 }
 
 void drs(int drslight) {
@@ -115,7 +115,10 @@ void startWiFi()
   while (WiFi.status() != WL_CONNECTED)
   {
     Serial.print('.');
-    delay(250);
+    digitalWrite(led, LOW);
+    delay(100);
+    digitalWrite(led, HIGH);
+    delay(100);
 
     if ((++i % 16) == 0)
     {
@@ -125,6 +128,8 @@ void startWiFi()
   }
 
   Serial.print(F("Connection Successful | IP Address: "));
+  digitalWrite(led, HIGH);
+  delay(100); 
   leds[15] = CRGB::Green;
   FastLED.show();
   delay(250);
