@@ -34,7 +34,7 @@ while 重启五秒内 && 重置按键被按下 ：
 
 #define SSID_LENGTH 40
 
-#define WIFI_SET_PIN 21
+#define WIFI_SET_PIN 9
 
 int record_rst_time();
 void nvs_test();

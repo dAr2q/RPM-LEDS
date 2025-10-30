@@ -198,7 +198,7 @@ void check_wifi(char *ssid, char *password)
 void ap_init()
 {
     //WiFi.softAP(ssid, password);
-    WiFi.softAP("RPM-Display-Debug_ap");
+    WiFi.softAP("RPM-Display");
     IPAddress myIP = WiFi.softAPIP();
     Serial.print("AP IP address: ");
     Serial.println(myIP);
@@ -237,7 +237,7 @@ int wifi_config_server()
                         client.println();
 
                         // the content of the HTTP response follows the header:
-                        client.print("<h1>RPM-LED</h1><br><h2>ESP32 WIFI CONFIG</h2><br>");
+                        client.print("<h1>RPM-Display</h1><br><h2>ESP32 WIFI CONFIG</h2><br>");
                         client.print("Click <a href=\"/wifi_set\">here</a> to set WIFI.<br>");
 
                         // The HTTP response ends with another blank line:
@@ -263,7 +263,7 @@ int wifi_config_server()
                     client.println("Content-type:text/html");
                     client.println();
 
-                    client.print("<h1>RPM-LED</h1><br><h2>ESP32 WIFI CONFIG</h2><br>");
+                    client.print("<h1>RPM-Display</h1><br><h2>ESP32 WIFI CONFIG</h2><br>");
                     client.print("<form action=\"/set_over\">SSID:<br><input type=\"text\" name=\"ssid\"><br>PASSWORD:<br><input type=\"text\" name=\"password\"><br><br>");
                     client.print("<input type=\"submit\" value=\"Set\"></form>");
                     // The HTTP response ends with another blank line:
@@ -297,7 +297,7 @@ int wifi_config_server()
                     client.println("Content-type:text/html");
                     client.println();
 
-                    client.print("<h1>RPM-LED</h1><br><h2>ESP32 WIFI CONFIG</h2><br>");
+                    client.print("<h1>RPM-Display</h1><br><h2>ESP32 WIFI CONFIG</h2><br>");
                     client.print("Set Successful<br>");
                     client.println();
 
@@ -355,7 +355,7 @@ void set_wifi_from_url(String get_url)
 //     if (strcmp(ssid, "NULL") == 0 )
 //     {
 //         //检查SSID是否为NULL
-//         Serial.println("Check SSID is NULL,please connect \"Makerfabs_ap\".");
+//         Serial.println("Check SSID is NULL,please connect \"RPM-Display\".");
 //         Serial.println("And visit 192.168.4.1 to set WIFI.");
 //         ap_init();
 //         while (wifi_config_server())
@@ -429,7 +429,7 @@ int wifi_set_main()
         if (digitalRead(WIFI_SET_PIN) == LOW)
         {
 
-            Serial.println("Please connect \"Makerfabs_ap\".");
+            Serial.println("Please connect \"RPM-Display\".");
             Serial.println("And visit 192.168.4.1 to set WIFI.");
             ap_init();
             while (wifi_config_server())

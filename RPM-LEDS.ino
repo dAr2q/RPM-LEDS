@@ -4,25 +4,19 @@
 #include <WiFi.h> // ESP32 WiFi include
 //#include <ESP8266WiFi.h> // ESP8266 WiFi include
 #include <WiFiUdp.h>
+#include <src/wifi_save.h>
 #include <src/F1_24_UDP.h>
 #include <FastLED.h>
-int led = 8;
 #define NUM_LEDS 16
 #define BRIGHTNESS 20
 #define DATA_PIN 4
 CRGB leds[NUM_LEDS];
 
 
-void startWiFi();
-
-//The IP address that this ESP32 has requested to be assigned to.
-IPAddress ip();
-
 F1_24_Parser* parser;
 
 void setup()
 {
-  pinMode(led, OUTPUT);
   Serial.begin(115200);
   Serial.println("Starting RPM LEDS v0.5");
   parser = new F1_24_Parser();  
@@ -37,11 +31,13 @@ void setup()
   leds[3] = CRGB::Green;
   leds[4] = CRGB::Green;
   FastLED.show();
-  delay(250);
-  leds[15] = CRGB::Cyan;
+  delay(250);  
   FastLED.show();
-  startWiFi();
-  leds[5] = CRGB::Red;
+   if (wifi_set_main())
+    {
+        Serial.println("Connect WIFI SUCCESS");
+        leds[15] = CRGB::Cyan;
+        leds[5] = CRGB::Red;
   leds[6] = CRGB::Red;
   leds[7] = CRGB::Red;
   leds[8] = CRGB::Red;
@@ -59,6 +55,16 @@ void setup()
   FastLED.clear();
   FastLED.show();
   delay(250);
+    }
+    else
+    {
+        Serial.println("Connect WIFI FAULT");
+        FastLED.clear();
+        FastLED.show();
+        leds[15] = CRGB::Red;
+        FastLED.show();
+        delay(250);
+    }
 }
 
 void loop()
@@ -98,40 +104,4 @@ void revLight(int revs) {
     leds[i] = (i < ledCount) ? CRGB::Purple : CRGB::Black;
   }
   FastLED.show();
-}
-
-void startWiFi()
-{
-  WiFi.persistent(false);
-  WiFi.mode(WIFI_OFF);
-  WiFi.mode(WIFI_STA);
-  WiFi.disconnect();
-  delay(100);  
-  WiFi.begin(SSID, Password);
-  Serial.print("Attempting to connect to ");
-  Serial.println(SSID);
-
-  uint8_t i = 0;
-  while (WiFi.status() != WL_CONNECTED)
-  {
-    Serial.print('.');
-    digitalWrite(led, LOW);
-    delay(100);
-    digitalWrite(led, HIGH);
-    delay(100);
-
-    if ((++i % 16) == 0)
-    {
-      Serial.println(F(" still trying to connect"));
-      ESP.restart();
-    }
-  }
-
-  Serial.print(F("Connection Successful | IP Address: "));
-  digitalWrite(led, HIGH);
-  delay(100); 
-  leds[15] = CRGB::Green;
-  FastLED.show();
-  delay(250);
-  Serial.println(WiFi.localIP());
 }
