@@ -1,8 +1,8 @@
 # RPM LED for F1 24 based on ESP32 and WS2812
 
-Based on [f1-24-udp](https://github.com/MacManley/f1-24-udp)
-Webserver Portion from [makerfabs](https://github.com/Makerfabs/Makerfabs_FAQ/tree/master/Arduino_ESP32/arduino_example/wifi_set_demo)
-Uses FastLED from [FastLED](https://github.com/FastLED/FastLED)
+- Based on [f1-24-udp](https://github.com/MacManley/f1-24-udp)
+- Webserver Portion from [makerfabs](https://github.com/Makerfabs/Makerfabs_FAQ/tree/master/Arduino_ESP32/arduino_example/wifi_set_demo)
+- FastLED from [FastLED](https://github.com/FastLED/FastLED)
 
 # Status
 
