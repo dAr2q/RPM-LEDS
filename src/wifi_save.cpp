@@ -145,7 +145,7 @@ void check_wifi(char *ssid, char *password) {
 
 void ap_init() {
   //WiFi.softAP(ssid, password);
-  WiFi.softAP("RPM-Display");
+  WiFi.softAP("RPM-Display Config");
   IPAddress myIP = WiFi.softAPIP();
   Serial.print("AP IP address: ");
   Serial.println(myIP);
@@ -302,19 +302,21 @@ int wifi_set_main() {
   char ssid[SSID_LENGTH];
   char password[SSID_LENGTH];
   pinMode(WIFI_SET_PIN, INPUT_PULLUP);
+  pinMode(LED_BLUE, OUTPUT);
 
   check_wifi(ssid, password);
 
   Serial.println("Check WIFI_SET_PIN");
+  digitalWrite(LED_BLUE, HIGH);
   int runtime = millis();
   int starttime = runtime;
   while ((runtime - starttime) < 3000) {
     if (digitalRead(WIFI_SET_PIN) == LOW) {
-
       Serial.println("Please connect \"RPM-Display\".");
       Serial.println("And visit 192.168.4.1 to set WIFI.");
       ap_init();
       while (wifi_config_server())
+      digitalWrite(LED_BLUE, LOW);
         ;
       delay(3000);
       esp_restart();
@@ -328,6 +330,7 @@ int wifi_set_main() {
 
   //Connect wifi
   Serial.println("Connecting WIFI");
+  digitalWrite(LED_BLUE, HIGH);
   WiFi.begin(ssid, password);
 
   int connect_count = 0;
