@@ -4,6 +4,15 @@
 - Webserver Portion from [makerfabs](https://github.com/Makerfabs/Makerfabs_FAQ/tree/master/Arduino_ESP32/arduino_example/wifi_set_demo)
 - FastLED from [FastLED](https://github.com/FastLED/FastLED)
 
+# Usage
+
+- On firstboot press BOOT Button to enable AP
+- Connect to RPM-Display Config AP and open 192.168.4.1
+- Set up the SSID and Password
+
+- Ingame set Telemetry to IP from ESP and Frequency to 60Hz
+ 
+
 # Status
 
 - Currently works on ESP32-WROOM and ESP32-C3 Super Mini (could work on ESP8266 but dont have any to test)
