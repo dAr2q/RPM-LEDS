@@ -6,7 +6,6 @@
 
 # Usage
 
-- On firstboot press BOOT Button to enable AP
 - Connect to RPM-Display Config AP and open 192.168.4.1
 - Set up the SSID and Password
 
@@ -19,7 +18,6 @@
 
 # ToDo
 
-- Before connecting to WiFi (if NVS is empty) create AP to enter Webserver
 - if EN Button pressed for 5 seconds reset and erase Wifi Settings and set AP
 
 # Bugs
