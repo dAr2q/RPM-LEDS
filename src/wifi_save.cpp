@@ -117,7 +117,7 @@ void check_wifi(char *ssid, char *password) {
       Serial.println("And visit 192.168.4.1 to set WIFI.");
       ap_init();
       while (wifi_config_server())
-      digitalWrite(LED_BLUE, LOW);
+      digitalWrite(LED_BLUE, LOW); // esp32-c3 = low / esp32-wroom-32d = high
         ;
       delay(3000);
       esp_restart();
@@ -285,7 +285,7 @@ int wifi_set_main() {
   pinMode(LED_BLUE, OUTPUT);
   check_wifi(ssid, password);
   Serial.println("Check WIFI_SET_PIN");
-  digitalWrite(LED_BLUE, HIGH);
+  digitalWrite(LED_BLUE, HIGH); // esp32-c3 = high / esp32-wroom-32d = low
   int runtime = millis();
   int starttime = runtime;
   while ((runtime - starttime) < 3000) {
@@ -294,7 +294,7 @@ int wifi_set_main() {
       Serial.println("And visit 192.168.4.1 to set WIFI.");
       ap_init();
       while (wifi_config_server())
-      digitalWrite(LED_BLUE, LOW);
+      digitalWrite(LED_BLUE, LOW); // esp32-c3 = low / esp32-wroom-32d = high
         ;
       delay(3000);
       esp_restart();
@@ -306,7 +306,7 @@ int wifi_set_main() {
   }
   Serial.println();
   Serial.println("Connecting WIFI");
-  digitalWrite(LED_BLUE, HIGH);
+  digitalWrite(LED_BLUE, HIGH); // esp32-c3 = high / esp32-wroom-32d = low
   WiFi.begin(ssid, password);
 
   int connect_count = 0;
