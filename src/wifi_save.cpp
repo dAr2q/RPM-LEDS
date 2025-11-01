@@ -119,6 +119,14 @@ void check_wifi(char *ssid, char *password) {
         break;
       case ESP_ERR_NVS_NOT_FOUND:
         printf("The value is not initialized yet!\n");
+        Serial.println("Please connect to \"RPM-Display Config\".");
+      Serial.println("And visit 192.168.4.1 to set WIFI.");
+      ap_init();
+      while (wifi_config_server())
+      digitalWrite(LED_BLUE, LOW);
+        ;
+      delay(3000);
+      esp_restart();
         break;
       default:
         printf("Error (%s) reading!\n", esp_err_to_name(err));
@@ -312,7 +320,7 @@ int wifi_set_main() {
   int starttime = runtime;
   while ((runtime - starttime) < 3000) {
     if (digitalRead(WIFI_SET_PIN) == LOW) {
-      Serial.println("Please connect \"RPM-Display\".");
+      Serial.println("Please connect to \"RPM-Display Config\".");
       Serial.println("And visit 192.168.4.1 to set WIFI.");
       ap_init();
       while (wifi_config_server())
