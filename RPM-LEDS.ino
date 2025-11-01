@@ -17,7 +17,7 @@ F1_24_Parser* parser;
 void setup()
 {
   Serial.begin(115200);
-  Serial.println("Starting RPM LEDS v0.7");
+  Serial.println("Starting RPM LEDS v0.8");
   parser = new F1_24_Parser();  
   FastLED.addLeds<WS2812, DATA_PIN, GRB>(leds, NUM_LEDS);
   FastLED.setBrightness(BRIGHTNESS);

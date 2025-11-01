@@ -14,7 +14,7 @@
 
 # Status
 
-- Currently works on ESP32-WROOM and ESP32-C3 Super Mini (could work on ESP8266 but dont have any to test)
+- Currently only tested on ESP32-C3 Super Mini (could work on ESP8266 but dont have any to test)
 
 # ToDo
 

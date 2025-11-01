@@ -19,8 +19,6 @@ int record_rst_time() {
     printf("Error (%s) opening NVS handle!\n", esp_err_to_name(err));
   } else {
     printf("Done\n");
-
-    // Read
     printf("Reading restart counter from NVS ... ");
     int32_t restart_counter = 0;
     err = nvs_get_i32(my_handle, "restart_counter", &restart_counter);
@@ -36,8 +34,6 @@ int record_rst_time() {
       default:
         printf("Error (%s) reading!\n", esp_err_to_name(err));
     }
-
-    // Write
     printf("Updating restart counter in NVS ... ");
     restart_counter++;
     err = nvs_set_i32(my_handle, "restart_counter", restart_counter);
@@ -45,8 +41,6 @@ int record_rst_time() {
     printf("Committing updates in NVS ... ");
     err = nvs_commit(my_handle);
     printf((err != ESP_OK) ? "Failed!\n" : "Done\n");
-
-    // Close
     nvs_close(my_handle);
   }
 
@@ -152,7 +146,6 @@ void check_wifi(char *ssid, char *password) {
 }
 
 void ap_init() {
-  //WiFi.softAP(ssid, password);
   WiFi.softAP("RPM-Display Config");
   IPAddress myIP = WiFi.softAPIP();
   Serial.print("AP IP address: ");
@@ -162,31 +155,25 @@ void ap_init() {
 
 int wifi_config_server() {
 
-  WiFiClient client = server.available();  // listen for incoming clients
+  WiFiClient client = server.available();
 
-  if (client)  // if you get a client,
+  if (client)
   {
     Serial.println("---------------------------------------------------");
     Serial.printf("Index:%d\n", client_count);
     client_count++;
-    Serial.println("New Client.");  // print a message out the serial port
-    String currentLine = "";        // make a String to hold incoming data from the client
-    while (client.connected()) {    // loop while the client's connected
-      if (client.available()) {     // if there's bytes to read from the client,
-        char c = client.read();     // read a byte, then
-        Serial.write(c);            // print it out the serial monitor
-        if (c == '\n') {            // if the byte is a newline character
-
-          // if the current line is blank, you got two newline characters in a row.
-          // that's the end of the client HTTP request, so send a response:
+    Serial.println("New Client.");
+    String currentLine = "";
+    while (client.connected()) {
+      if (client.available()) {
+        char c = client.read();
+        Serial.write(c);
+        if (c == '\n') {
           if (currentLine.length() == 0) {
-            // HTTP headers always start with a response code (e.g. HTTP/1.1 200 OK)
-            // and a content-type so the client knows what's coming, then a blank line:
             client.println("HTTP/1.1 200 OK");
             client.println("Content-type:text/html");
             client.println();
 
-            // the content of the HTTP response follows the header:
             client.print("<!doctype html>");
             client.print("<head>");
             client.print("<title>RPM-Display - Config Mode</title>");
@@ -196,21 +183,15 @@ int wifi_config_server() {
             client.print("<center>Click <a href=\"/wifi_set\">here</a> to set WIFI.<br></center>");
             client.print("</body>");
             client.print("</html>");
-
-                        // The HTTP response ends with another blank line:
-                        client.println();
-                        // break out of the while loop:
-                        break;
-          } else {  // if you got a newline, then clear currentLine:
+            client.println();
+          break;
+          } else {
             currentLine = "";
           }
-        } else if (c != '\r') {  // if you got anything else but a carriage return character,
-          currentLine += c;      // add it to the end of the currentLine
+        } else if (c != '\r') {
+          currentLine += c;
         }
-        //show wifiset page
         if (currentLine.endsWith("GET /wifi_set")) {
-          // HTTP headers always start with a response code (e.g. HTTP/1.1 200 OK)
-          // and a content-type so the client knows what's coming, then a blank line:
           client.println("HTTP/1.1 200 OK");
           client.println("Content-type:text/html");
           client.println();
@@ -225,15 +206,12 @@ int wifi_config_server() {
             client.print("<center><input type=\"submit\" value=\"Set\"></form></center>");
             client.print("</body>");
             client.print("</html>");
-          // The HTTP response ends with another blank line:
             client.println();
-          // break out of the while loop:
           break;
         }
 
         if (currentLine.endsWith("GET /set_over")) {
           String get_request = "";
-          //read GET next line
           while (1) {
             char c_get = client.read();
             Serial.write(c_get);
@@ -244,13 +222,11 @@ int wifi_config_server() {
             }
           }
 
-          //set_wifi_from_url(server.uri());
           set_wifi_from_url(get_request);
 
           client.println("HTTP/1.1 200 OK");
           client.println("Content-type:text/html");
           client.println();
-
             client.print("<!doctype html>");
             client.print("<head>");
             client.print("<title>RPM-Display - Config Mode - Success</title>");
@@ -260,9 +236,7 @@ int wifi_config_server() {
             client.print("<center>Set Successful<br></center>");
             client.print("</body>");
             client.print("</html>");
-
             client.println();
-
           client.stop();
           Serial.println("Client Disconnected.");
 
@@ -270,7 +244,6 @@ int wifi_config_server() {
         }
       }
     }
-    // close the connection:
     client.stop();
     Serial.println("Client Disconnected.");
   }
@@ -278,7 +251,6 @@ int wifi_config_server() {
 }
 
 void set_wifi_from_url(String get_url) {
-  //get_url = "http://192.168.4.1/set_over?ssid=Makerfabs&password=20160704"
   int str_len = 0;
   int ssid_add = 0;
   int pwd_add = 0;
@@ -311,9 +283,7 @@ int wifi_set_main() {
   char password[SSID_LENGTH];
   pinMode(WIFI_SET_PIN, INPUT_PULLUP);
   pinMode(LED_BLUE, OUTPUT);
-
   check_wifi(ssid, password);
-
   Serial.println("Check WIFI_SET_PIN");
   digitalWrite(LED_BLUE, HIGH);
   int runtime = millis();
@@ -335,8 +305,6 @@ int wifi_set_main() {
     runtime = millis();
   }
   Serial.println();
-
-  //Connect wifi
   Serial.println("Connecting WIFI");
   digitalWrite(LED_BLUE, HIGH);
   WiFi.begin(ssid, password);
@@ -371,8 +339,6 @@ void nvs_test() {
   sprintf(password, "password_%d", rst_time);
 
   record_wifi(ssid, password);
-
-  // Restart module
   for (int i = 10; i >= 0; i--) {
     printf("Restarting in %d seconds...\n", i);
     vTaskDelay(1000 / portTICK_PERIOD_MS);
