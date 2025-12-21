@@ -9,7 +9,7 @@
 - Connect to RPM-Display Config AP and open 192.168.4.1
 - Set up the SSID and Password
 
-- Ingame set Telemetry to IP from ESP and Frequency to 60Hz
+- Ingame set Telemetry to IP from ESP and Frequency to 30Hz
  
 
 # Status
@@ -19,10 +19,12 @@
 # ToDo
 
 - if EN Button pressed for 5 seconds reset and erase Wifi Settings and set AP
+- Find the fitting RPM Range for F2
 
 # Bugs
 
 - WiFi does not always connect (so after trying for a few seconds the ESP reboots "not pretty but works")
+- F2 currently doenst really line up to the RPMs
 
 # **Legal Notice**
 

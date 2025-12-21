@@ -114,13 +114,12 @@ void check_wifi(char *ssid, char *password) {
       case ESP_ERR_NVS_NOT_FOUND:
         printf("The value is not initialized yet!\n");
         Serial.println("Please connect to \"RPM-Display Config\".");
-      Serial.println("And visit 192.168.4.1 to set WIFI.");
-      ap_init();
-      while (wifi_config_server())
-      digitalWrite(LED_BLUE, LOW); // esp32-c3 = low / esp32-wroom-32d = high
-        ;
-      delay(3000);
-      esp_restart();
+        Serial.println("And visit 192.168.4.1 to set WIFI.");
+        ap_init();
+        while (wifi_config_server())
+          digitalWrite(LED_BLUE, LOW);  // esp32-c3 = low / esp32-wroom-32d = high
+        delay(3000);
+        esp_restart();
         break;
       default:
         printf("Error (%s) reading!\n", esp_err_to_name(err));
@@ -157,8 +156,7 @@ int wifi_config_server() {
 
   WiFiClient client = server.available();
 
-  if (client)
-  {
+  if (client) {
     Serial.println("---------------------------------------------------");
     Serial.printf("Index:%d\n", client_count);
     client_count++;
@@ -184,7 +182,7 @@ int wifi_config_server() {
             client.print("</body>");
             client.print("</html>");
             client.println();
-          break;
+            break;
           } else {
             currentLine = "";
           }
@@ -196,17 +194,17 @@ int wifi_config_server() {
           client.println("Content-type:text/html");
           client.println();
 
-            client.print("<!doctype html>");
-            client.print("<head>");
-            client.print("<title>RPM-Display - Config Mode - WiFi</title>");
-            client.print("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, user-scalable=no\"/>");
-            client.print("</head>");
-            client.print("<center><h1>RPM-Display</h1><br><h2>ESP32 WIFI CONFIG</h2><br></center>");
-            client.print("<center><form action=\"/set_over\">SSID:<br><input type=\"text\" name=\"ssid\"><br>PASSWORD:<br><input type=\"password\" name=\"password\"><br><br></center>");
-            client.print("<center><input type=\"submit\" value=\"Set\"></form></center>");
-            client.print("</body>");
-            client.print("</html>");
-            client.println();
+          client.print("<!doctype html>");
+          client.print("<head>");
+          client.print("<title>RPM-Display - Config Mode - WiFi</title>");
+          client.print("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, user-scalable=no\"/>");
+          client.print("</head>");
+          client.print("<center><h1>RPM-Display</h1><br><h2>ESP32 WIFI CONFIG</h2><br></center>");
+          client.print("<center><form action=\"/set_over\">SSID:<br><input type=\"text\" name=\"ssid\"><br>PASSWORD:<br><input type=\"password\" name=\"password\"><br><br></center>");
+          client.print("<center><input type=\"submit\" value=\"Set\"></form></center>");
+          client.print("</body>");
+          client.print("</html>");
+          client.println();
           break;
         }
 
@@ -227,16 +225,16 @@ int wifi_config_server() {
           client.println("HTTP/1.1 200 OK");
           client.println("Content-type:text/html");
           client.println();
-            client.print("<!doctype html>");
-            client.print("<head>");
-            client.print("<title>RPM-Display - Config Mode - Success</title>");
-            client.print("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, user-scalable=no\"/>");
-            client.print("</head>");
-            client.print("<center><h1>RPM-Display</h1><br><h2>ESP32 WIFI CONFIG</h2><br></center>");
-            client.print("<center>Set Successful<br></center>");
-            client.print("</body>");
-            client.print("</html>");
-            client.println();
+          client.print("<!doctype html>");
+          client.print("<head>");
+          client.print("<title>RPM-Display - Config Mode - Success</title>");
+          client.print("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, user-scalable=no\"/>");
+          client.print("</head>");
+          client.print("<center><h1>RPM-Display</h1><br><h2>ESP32 WIFI CONFIG</h2><br></center>");
+          client.print("<center>Set Successful<br></center>");
+          client.print("</body>");
+          client.print("</html>");
+          client.println();
           client.stop();
           Serial.println("Client Disconnected.");
 
@@ -285,7 +283,7 @@ int wifi_set_main() {
   pinMode(LED_BLUE, OUTPUT);
   check_wifi(ssid, password);
   Serial.println("Check WIFI_SET_PIN");
-  digitalWrite(LED_BLUE, HIGH); // esp32-c3 = high / esp32-wroom-32d = low
+  digitalWrite(LED_BLUE, HIGH);  // esp32-c3 = high / esp32-wroom-32d = low
   int runtime = millis();
   int starttime = runtime;
   while ((runtime - starttime) < 3000) {
@@ -294,8 +292,8 @@ int wifi_set_main() {
       Serial.println("And visit 192.168.4.1 to set WIFI.");
       ap_init();
       while (wifi_config_server())
-      digitalWrite(LED_BLUE, LOW); // esp32-c3 = low / esp32-wroom-32d = high
-        ;
+        digitalWrite(LED_BLUE, LOW);  // esp32-c3 = low / esp32-wroom-32d = high
+      ;
       delay(3000);
       esp_restart();
       return 0;
@@ -306,7 +304,7 @@ int wifi_set_main() {
   }
   Serial.println();
   Serial.println("Connecting WIFI");
-  digitalWrite(LED_BLUE, HIGH); // esp32-c3 = high / esp32-wroom-32d = low
+  digitalWrite(LED_BLUE, HIGH);  // esp32-c3 = high / esp32-wroom-32d = low
   WiFi.begin(ssid, password);
 
   int connect_count = 0;

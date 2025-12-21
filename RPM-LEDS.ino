@@ -1,7 +1,7 @@
 //File: RPM-LEDS.ino
 //Based on example from f1_24_udp simpleserialprint and drslight
 
-#include <WiFi.h> // ESP32 WiFi include
+#include <WiFi.h>  // ESP32 WiFi include
 //#include <ESP8266WiFi.h> // ESP8266 WiFi include
 #include <WiFiUdp.h>
 #include <src/wifi_save.h>
@@ -14,11 +14,10 @@ CRGB leds[NUM_LEDS];
 
 F1_24_Parser* parser;
 
-void setup()
-{
+void setup() {
   Serial.begin(115200);
-  Serial.println("Starting RPM LEDS v0.8");
-  parser = new F1_24_Parser();  
+  Serial.println("Starting RPM LEDS v0.8d");
+  parser = new F1_24_Parser();
   FastLED.addLeds<WS2812, DATA_PIN, GRB>(leds, NUM_LEDS);
   FastLED.setBrightness(BRIGHTNESS);
   FastLED.clear();
@@ -31,70 +30,69 @@ void setup()
   leds[3] = CRGB::Green;
   leds[4] = CRGB::Green;
   FastLED.show();
-  delay(250);  
-   if (wifi_set_main())
-    {
-        Serial.println("Connect WIFI SUCCESS");
-        leds[15] = CRGB::Green;
-        FastLED.show();
-        delay(250);
-        leds[5] = CRGB::Red;
-  leds[6] = CRGB::Red;
-  leds[7] = CRGB::Red;
-  leds[8] = CRGB::Red;
-  leds[9] = CRGB::Red;
-  FastLED.show();
   delay(250);
-  parser->begin();
-  leds[10] = CRGB::Purple;
-  leds[11] = CRGB::Purple;
-  leds[12] = CRGB::Purple;
-  leds[13] = CRGB::Purple;
-  leds[14] = CRGB::Purple;
-  FastLED.show();
-  delay(250);
-  FastLED.clear();
-  FastLED.show();
-  delay(250);
-    }
-    else
-    {
-        Serial.println("Connect WIFI FAULT");
-        FastLED.clear();
-        FastLED.show();
-        leds[15] = CRGB::Red;
-        FastLED.show();
-        Serial.println("Restarting ESP in 5 seconds");
-        delay(5000);
-        ESP.restart();
-    }
+  if (wifi_set_main()) {
+    Serial.println("Connect WIFI SUCCESS");
+    leds[15] = CRGB::Green;
+    FastLED.show();
+    delay(250);
+    leds[5] = CRGB::Red;
+    leds[6] = CRGB::Red;
+    leds[7] = CRGB::Red;
+    leds[8] = CRGB::Red;
+    leds[9] = CRGB::Red;
+    FastLED.show();
+    delay(250);
+    parser->begin();
+    leds[10] = CRGB::Purple;
+    leds[11] = CRGB::Purple;
+    leds[12] = CRGB::Purple;
+    leds[13] = CRGB::Purple;
+    leds[14] = CRGB::Purple;
+    FastLED.show();
+    delay(250);
+    FastLED.clear();
+    FastLED.show();
+    delay(250);
+  } else {
+    Serial.println("Connect WIFI FAULT");
+    FastLED.clear();
+    FastLED.show();
+    leds[15] = CRGB::Red;
+    FastLED.show();
+    Serial.println("Restarting ESP in 5 seconds");
+    delay(5000);
+    ESP.restart();
+  }
 }
 
-void loop()
-{
+void loop() {
   parser->read();
-  unsigned int playerCar = parser->packetCarTelemetryData()->m_playerCarIndex(); //Get the index of the players car in the array.
+  uint8_t playerCar = parser->packetCarTelemetryData()->m_playerCarIndex();  //Get the index of the players car in the array.
+  uint8_t F1_Mode = parser->packetSessionData()->m_formula();                //Get Formula Class F1/F2
   //Setup DRS Light
-  FastLED.clear();
-  uint8_t drslight = parser->packetCarStatusData()->m_carStatusData(playerCar).m_drsAllowed; //DRS allowed
+  uint8_t drslight = parser->packetCarStatusData()->m_carStatusData(playerCar).m_drsAllowed;  //DRS allowed
   drs(drslight);
-  uint16_t revs = parser->packetCarTelemetryData()->m_carTelemetryData(playerCar).m_engineRPM; //Revlights
-  revLight(revs);
-  //Serial.println(revs); //disable for now
+  uint16_t revs = parser->packetCarTelemetryData()->m_carTelemetryData(playerCar).m_engineRPM;  //Revlights
+  if (F1_Mode < 2) {
+    revLightF1(revs);
+  } else {
+    revLightF2(revs);
+  }
 }
 
 void drs(int drslight) {
   if (drslight) {
     leds[15] = CRGB::Purple;
     FastLED.show();
-  }  else  {
+  } else {
     leds[15] = CRGB::Black;
     FastLED.show();
   }
 }
 
-void revLight(int revs) {
-  int ledCount = map(revs, 9900, 12000, 0, 15); // Adjust max RPM
+void revLightF1(int revs) {
+  int ledCount = map(revs, 9900, 12000, 0, 15);  // Adjust max RPM
   for (int i = 0; i < 5; i++) {
     leds[i] = (i < ledCount) ? CRGB::Green : CRGB::Black;
   }
@@ -103,7 +101,23 @@ void revLight(int revs) {
     leds[i] = (i < ledCount) ? CRGB::Red : CRGB::Black;
   }
   FastLED.show();
-  for (int i = 10;  i < 15; i++) {
+  for (int i = 10; i < 15; i++) {
+    leds[i] = (i < ledCount) ? CRGB::Purple : CRGB::Black;
+  }
+  FastLED.show();
+}
+
+void revLightF2(int revs) {
+  int ledCount = map(revs, 7035, 8600, 0, 15);  // Adjust max RPM
+  for (int i = 0; i < 5; i++) {
+    leds[i] = (i < ledCount) ? CRGB::Green : CRGB::Black;
+  }
+  FastLED.show();
+  for (int i = 5; i < 10; i++) {
+    leds[i] = (i < ledCount) ? CRGB::Red : CRGB::Black;
+  }
+  FastLED.show();
+  for (int i = 10; i < 15; i++) {
     leds[i] = (i < ledCount) ? CRGB::Purple : CRGB::Black;
   }
   FastLED.show();
