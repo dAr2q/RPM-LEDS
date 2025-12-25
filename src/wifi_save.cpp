@@ -305,6 +305,7 @@ int wifi_set_main() {
   Serial.println();
   Serial.println("Connecting WIFI");
   digitalWrite(LED_BLUE, HIGH);  // esp32-c3 = high / esp32-wroom-32d = low
+  WiFi.setHostname("RPM-Display-ESP32");
   WiFi.begin(ssid, password);
 
   int connect_count = 0;
@@ -321,6 +322,8 @@ int wifi_set_main() {
   Serial.println("WiFi connected");
   Serial.println("IP address: ");
   Serial.println(WiFi.localIP());
+  Serial.println("Hostname: ");
+  Serial.println(WiFi.getHostname());
 
   return 1;
 }
