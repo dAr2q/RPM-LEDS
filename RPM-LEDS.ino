@@ -24,11 +24,9 @@ void setup() {
   FastLED.show();
   delay(250);
   leds[15] = CRGB::Cyan;
-  leds[0] = CRGB::Green;
-  leds[1] = CRGB::Green;
-  leds[2] = CRGB::Green;
-  leds[3] = CRGB::Green;
-  leds[4] = CRGB::Green;
+  for (int i = 0; i < 5; i++) {
+    leds[i] = (i < NUM_LEDS) ? CRGB::Green : CRGB::Black;
+  }
   FastLED.show();
   delay(250);
   if (wifi_set_main()) {
@@ -36,19 +34,15 @@ void setup() {
     leds[15] = CRGB::Green;
     FastLED.show();
     delay(250);
-    leds[5] = CRGB::Red;
-    leds[6] = CRGB::Red;
-    leds[7] = CRGB::Red;
-    leds[8] = CRGB::Red;
-    leds[9] = CRGB::Red;
+    for (int i = 5; i < 10; i++) {
+      leds[i] = (i < NUM_LEDS) ? CRGB::Red : CRGB::Black;
+    }
     FastLED.show();
     delay(250);
     parser->begin();
-    leds[10] = CRGB::Purple;
-    leds[11] = CRGB::Purple;
-    leds[12] = CRGB::Purple;
-    leds[13] = CRGB::Purple;
-    leds[14] = CRGB::Purple;
+    for (int i = 10; i < 15; i++) {
+      leds[i] = (i < NUM_LEDS) ? CRGB::Purple : CRGB::Black;
+    }
     FastLED.show();
     delay(250);
     FastLED.clear();
