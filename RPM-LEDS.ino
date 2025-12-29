@@ -16,7 +16,7 @@ F1_24_Parser* parser;
 
 void setup() {
   Serial.begin(115200);
-  Serial.println("Starting RPM LEDS v0.8d");
+  Serial.println("Starting RPM LEDS v0.8e");
   parser = new F1_24_Parser();
   FastLED.addLeds<WS2812, DATA_PIN, GRB>(leds, NUM_LEDS);
   FastLED.setBrightness(BRIGHTNESS);
@@ -63,15 +63,22 @@ void setup() {
 void loop() {
   parser->read();
   uint8_t playerCar = parser->packetCarTelemetryData()->m_playerCarIndex();  //Get the index of the players car in the array.
-  uint8_t F1_Mode = parser->packetSessionData()->m_formula();                //Get Formula Class F1/F2
+  uint8_t F1_Mode = parser->packetSessionData()->m_formula();                //Get Formula Mode
   //Setup DRS Light
   uint8_t drslight = parser->packetCarStatusData()->m_carStatusData(playerCar).m_drsAllowed;  //DRS allowed
   drs(drslight);
   uint16_t revs = parser->packetCarTelemetryData()->m_carTelemetryData(playerCar).m_engineRPM;  //Revlights
-  if (F1_Mode < 2) {
-    revLightF1(revs);
-  } else {
-    revLightF2(revs);
+  switch (F1_Mode) {                                                                            //Formula Mode
+    case 0:
+    case 1:
+      revLightF1(revs);
+      break;
+    case 2:
+      revLightF2(revs);
+      break;
+    default:  //map everything thats not F2 to F1
+      revLightF1(revs);
+      break;
   }
 }
 

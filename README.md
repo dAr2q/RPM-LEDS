@@ -20,6 +20,7 @@
 
 - if EN Button pressed for 5 seconds reset and erase Wifi Settings and set AP
 - Find the fitting RPM Range for F2
+- Maybe switch the complete RPM-Logic to m_revLightsBitValue
 
 # Bugs
 
