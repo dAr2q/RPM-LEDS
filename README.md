@@ -1,4 +1,4 @@
-# RPM LED for F1 24 based on ESP32 and WS2812
+# RPM LED for F1 24/25 based on ESP32 and WS2812
 
 - Based on [f1-24-udp](https://github.com/MacManley/f1-24-udp)
 - FastLED from [FastLED](https://github.com/FastLED/FastLED)
@@ -11,6 +11,7 @@
 - Set up the SSID and Password
 
 - Ingame set Telemetry to IP from ESP and Frequency to 30Hz
+- Set Protocol to F1 2024
  
  
 - For Config press BOOT Button and open either Website or connect to AP

@@ -15,6 +15,7 @@
 #define BRIGHTNESS 20
 #define DATA_PIN 4
 
+#define LED_BLUE 8 //LOW = ON, HIGH = OFF
 #define WIFI_SET_PIN 9  // 9 = esp32-c3 / 0 = esp32-wroom-32d
 
 CRGB leds[NUM_LEDS];
@@ -50,7 +51,9 @@ void loadConfig() {
 }
 
 void setup() {
+  pinMode(8, OUTPUT);
   pinMode(9, INPUT_PULLUP);
+  digitalWrite(LED_BLUE, HIGH);
   Serial.begin(115200);
   Serial.println("Starting RPM LEDS v0.8f");
   parser = new F1_24_Parser();
@@ -66,6 +69,7 @@ void setup() {
   FastLED.show();
   delay(250);
   loadConfig();
+  digitalWrite(LED_BLUE, LOW);
   WiFiManager wm;
   wm.setSaveConfigCallback(saveConfigCallback);
   wm.setHostname("RPM-Display");
@@ -81,6 +85,7 @@ void setup() {
   }
   if (WiFi.status() == WL_CONNECTED) {
     Serial.println("Connect WIFI SUCCESS");
+    digitalWrite(LED_BLUE, HIGH);
     leds[15] = CRGB::Green;
     FastLED.show();
     delay(250);
@@ -105,8 +110,10 @@ void setup() {
 
 void loop() {
   if ( digitalRead(WIFI_SET_PIN) == LOW ) {
+    digitalWrite(LED_BLUE, LOW);
     WiFiManager wifiManager;
     wifiManager.startConfigPortal(RPM_CFG);
+    digitalWrite(LED_BLUE, HIGH);
   }
   parser->read();
   uint8_t playerCar = parser->packetCarTelemetryData()->m_playerCarIndex();  //Get the index of the players car in the array.
