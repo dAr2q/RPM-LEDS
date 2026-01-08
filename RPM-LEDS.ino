@@ -4,19 +4,55 @@
 #include <WiFi.h>  // ESP32 WiFi include
 //#include <ESP8266WiFi.h> // ESP8266 WiFi include
 #include <WiFiUdp.h>
-#include <src/wifi_save.h>
+#include <ArduinoJson.h>
+#include <WiFiManager.h>
+#include <FS.h>
+#include <LittleFS.h>
 #include <src/F1_24_UDP.h>
 #include <FastLED.h>
+
 #define NUM_LEDS 16
 #define BRIGHTNESS 20
 #define DATA_PIN 4
-CRGB leds[NUM_LEDS];
 
+#define WIFI_SET_PIN 9  // 9 = esp32-c3 / 0 = esp32-wroom-32d
+
+CRGB leds[NUM_LEDS];
+const char* RPM_CFG = "RPM-Display-Config";
 F1_24_Parser* parser;
 
+bool shouldSaveConfig = false;
+
+void saveConfigCallback() {
+  shouldSaveConfig = true;
+}
+
+void saveConfig() {
+  File configFile = LittleFS.open("/config.json", "w");
+  if (configFile) {
+    DynamicJsonDocument doc(512);
+    serializeJson(doc, configFile);
+    configFile.close();
+  }
+}
+
+void loadConfig() {
+  if (LittleFS.begin(true)) {
+    if (LittleFS.exists("/config.json)")) {
+      File configFile = LittleFS.open("/config.json", "r");
+      if (configFile) {
+        DynamicJsonDocument doc(512);
+        deserializeJson(doc, configFile);
+        configFile.close();
+      }
+    }
+  }
+}
+
 void setup() {
+  pinMode(9, INPUT_PULLUP);
   Serial.begin(115200);
-  Serial.println("Starting RPM LEDS v0.8e");
+  Serial.println("Starting RPM LEDS v0.8f");
   parser = new F1_24_Parser();
   FastLED.addLeds<WS2812, DATA_PIN, GRB>(leds, NUM_LEDS);
   FastLED.setBrightness(BRIGHTNESS);
@@ -29,7 +65,21 @@ void setup() {
   }
   FastLED.show();
   delay(250);
-  if (wifi_set_main()) {
+  loadConfig();
+  WiFiManager wm;
+  wm.setSaveConfigCallback(saveConfigCallback);
+  wm.setHostname("RPM-Display");
+  wm.setClass("invert");
+  wm.setScanDispPerc(true);
+  if (!wm.autoConnect(RPM_CFG)) {
+    FastLED.clear();
+    FastLED.show();
+    leds[15] = CRGB::Red;
+    FastLED.show();
+    delay(3000);
+    ESP.restart();
+  }
+  if (WiFi.status() == WL_CONNECTED) {
     Serial.println("Connect WIFI SUCCESS");
     leds[15] = CRGB::Green;
     FastLED.show();
@@ -48,19 +98,16 @@ void setup() {
     FastLED.clear();
     FastLED.show();
     delay(250);
-  } else {
-    Serial.println("Connect WIFI FAULT");
-    FastLED.clear();
-    FastLED.show();
-    leds[15] = CRGB::Red;
-    FastLED.show();
-    Serial.println("Restarting ESP in 5 seconds");
-    delay(5000);
-    ESP.restart();
   }
+  if (shouldSaveConfig) saveConfig();
 }
 
+
 void loop() {
+  if ( digitalRead(WIFI_SET_PIN) == LOW ) {
+    WiFiManager wifiManager;
+    wifiManager.startConfigPortal(RPM_CFG);
+  }
   parser->read();
   uint8_t playerCar = parser->packetCarTelemetryData()->m_playerCarIndex();  //Get the index of the players car in the array.
   uint8_t F1_Mode = parser->packetSessionData()->m_formula();                //Get Formula Mode

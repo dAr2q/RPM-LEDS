@@ -1,16 +1,19 @@
 # RPM LED for F1 24 based on ESP32 and WS2812
 
 - Based on [f1-24-udp](https://github.com/MacManley/f1-24-udp)
-- Webserver Portion from [makerfabs](https://github.com/Makerfabs/Makerfabs_FAQ/tree/master/Arduino_ESP32/arduino_example/wifi_set_demo)
 - FastLED from [FastLED](https://github.com/FastLED/FastLED)
+- WiFiManager from [tzapu](https://github.com/tzapu/WiFiManager)
+- ArduinoJson from [ArduinoJson](https://arduinojson.org)
 
 # Usage
 
-- Connect to RPM-Display Config AP and open 192.168.4.1
+- Connect to RPM-Display-Config AP on your Mobile 
 - Set up the SSID and Password
 
 - Ingame set Telemetry to IP from ESP and Frequency to 30Hz
  
+ 
+- For Config press BOOT Button and open either Website or connect to AP
 
 # Status
 
@@ -18,13 +21,12 @@
 
 # ToDo
 
-- if EN Button pressed for 5 seconds reset and erase Wifi Settings and set AP
 - Find the fitting RPM Range for F2
 - Maybe switch the complete RPM-Logic to m_revLightsBitValue
 
 # Bugs
 
-- WiFi does not always connect (so after trying for a few seconds the ESP reboots "not pretty but works")
+- WiFi does not always want to connect
 - F2 currently doenst really line up to the RPMs
 
 # **Legal Notice**
