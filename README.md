@@ -6,6 +6,7 @@
 - ArduinoJson from [ArduinoJson](https://arduinojson.org)
 
 # Usage
+- Connect DIN from your 16 LED WS2812/Neopixelring to PIN 4
 
 - Connect to RPM-Display-Config AP on your Mobile 
 - Set up the SSID and Password
