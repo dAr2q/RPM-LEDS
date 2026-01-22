@@ -2,7 +2,6 @@
 //Based on example from f1_24_udp simpleserialprint and drslight
 
 #include <WiFi.h>  // ESP32 WiFi include
-//#include <ESP8266WiFi.h> // ESP8266 WiFi include
 #include <WiFiUdp.h>
 #include <ArduinoJson.h>
 #include <WiFiManager.h>
@@ -15,8 +14,8 @@
 #define BRIGHTNESS 20
 #define DATA_PIN 4
 
-#define LED_BLUE 8 //LOW = ON, HIGH = OFF
-#define WIFI_SET_PIN 9  // 9 = esp32-c3 / 0 = esp32-wroom-32d
+#define LED_BLUE 8      //LOW = ON, HIGH = OFF
+#define WIFI_SET_PIN 9  // 9 = esp32-c3 / 8 = esp32-wroom-32d
 
 CRGB leds[NUM_LEDS];
 const char* RPM_CFG = "RPM-Display-Config";
@@ -73,8 +72,8 @@ void setup() {
   WiFiManager wm;
   wm.setSaveConfigCallback(saveConfigCallback);
   wm.setHostname("RPM-Display");
-  wm.setClass("invert");
-  wm.setScanDispPerc(true);
+  wm.setTitle("Config Mode");
+  wm.setDarkMode(true);
   if (!wm.autoConnect(RPM_CFG)) {
     FastLED.clear();
     FastLED.show();
@@ -109,10 +108,13 @@ void setup() {
 
 
 void loop() {
-  if ( digitalRead(WIFI_SET_PIN) == LOW ) {
+  if (digitalRead(WIFI_SET_PIN) == LOW) {
     digitalWrite(LED_BLUE, LOW);
-    WiFiManager wifiManager;
-    wifiManager.startConfigPortal(RPM_CFG);
+    WiFiManager wm;
+    wm.setHostname("RPM-Display");
+    wm.setTitle("Config Mode");
+    wm.setDarkMode(true);
+    wm.startConfigPortal(RPM_CFG);
     digitalWrite(LED_BLUE, HIGH);
   }
   parser->read();
@@ -122,7 +124,7 @@ void loop() {
   uint8_t drslight = parser->packetCarStatusData()->m_carStatusData(playerCar).m_drsAllowed;  //DRS allowed
   drs(drslight);
   uint16_t revs = parser->packetCarTelemetryData()->m_carTelemetryData(playerCar).m_engineRPM;  //Revlights
-  switch (F1_Mode) {                                                                            //Formula Mode
+  switch (F1_Mode) {  //Formula Mode
     case 0:
     case 1:
       revLightF1(revs);
