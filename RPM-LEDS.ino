@@ -38,7 +38,7 @@ void saveConfig() {
 
 void loadConfig() {
   if (LittleFS.begin(true)) {
-    if (LittleFS.exists("/config.json)")) {
+    if (LittleFS.exists("/config.json")) {
       File configFile = LittleFS.open("/config.json", "r");
       if (configFile) {
         DynamicJsonDocument doc(512);
@@ -59,7 +59,6 @@ void setup() {
   FastLED.addLeds<WS2812, DATA_PIN, GRB>(leds, NUM_LEDS);
   FastLED.setBrightness(BRIGHTNESS);
   FastLED.clear();
-  FastLED.show();
   delay(250);
   leds[15] = CRGB::Cyan;
   for (int i = 0; i < 5; i++) {
@@ -76,7 +75,6 @@ void setup() {
   wm.setDarkMode(true);
   if (!wm.autoConnect(RPM_CFG)) {
     FastLED.clear();
-    FastLED.show();
     leds[15] = CRGB::Red;
     FastLED.show();
     delay(3000);
@@ -100,7 +98,6 @@ void setup() {
     FastLED.show();
     delay(250);
     FastLED.clear();
-    FastLED.show();
     delay(250);
   }
   if (shouldSaveConfig) saveConfig();
